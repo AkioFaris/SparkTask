@@ -1,15 +1,16 @@
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
+import java.nio.file.{Files, Paths}
+
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
-object Task3 {
-  def main(args: Array[String]) {
-    val spark = SparkSession.builder
-      .master("local[*]")
-      .appName("SparkDataFrameExample")
-      .getOrCreate()
-    spark.sparkContext.setLogLevel("ERROR")
+object TableLoader {
 
+  def checkFileExists(fullPath: String): Unit = {
+    if (!Files.isRegularFile(Paths.get(fullPath)))
+      throw new RuntimeException("file " + fullPath + " does not exist.")
+  }
+
+  def loadTestTable(sparkSession: SparkSession, fullPath: String): DataFrame = {
     val testSchema = new StructType(
       Array(
         StructField("id", StringType, nullable = true),
@@ -35,22 +36,8 @@ object Task3 {
         StructField("hotel_country", StringType, nullable = true),
         StructField("hotel_market", StringType, nullable = true)
       ))
-
-    val df = spark.read.format("csv")
-      .schema(testSchema)
-      .load("D:\\Courses\\Big_Data\\1_HADOOP\\all\\test.csv")
-
-    df.select(
-      df.col("hotel_continent"),
-      df.col("hotel_country"),
-      df.col("hotel_market")
-    ).where("is_booking = 0")
-      .groupBy("hotel_country", "hotel_country", "hotel_market")
-      .count()
-        .sort(desc("count"))
-        .head(3)
-        .foreach(row => println(row))
-
-    spark.stop()
+    checkFileExists(fullPath)
+    sparkSession.read.schema(testSchema).csv(fullPath)
   }
+
 }
