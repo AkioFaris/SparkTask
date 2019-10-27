@@ -1,9 +1,5 @@
 import org.apache.spark.sql.SparkSession
 
-/**
- * Find top 3 most popular hotels between couples.
- * (treat hotel as composite key of continent, country and market).
- */
 object Task1 {
 
   def main(args: Array[String]) {
