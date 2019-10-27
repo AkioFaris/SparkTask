@@ -13,7 +13,7 @@ object Task1 {
       .getOrCreate()
     sparkSession.sparkContext.setLogLevel("ERROR")
     val df = TableLoader.loadTestTable(sparkSession, args(0))
-    ReservationsTableTransformation.top3MostPopularHotelsBetweenCouples(df)
+    ReservationsTableTransformation.mostPopularHotelsBetweenCouples(df)
       .head(3)
       .foreach(row => println(row))
 

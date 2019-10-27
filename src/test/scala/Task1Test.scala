@@ -6,7 +6,7 @@ import org.scalatest.FlatSpec
 
 class Task1Test extends FlatSpec {
 
-  "Test ReservationsTableTransformation" should "find top 3 most popular hotels between couples" in {
+  "Test ReservationsTableTransformation" should "find the most popular hotels between couples" in {
     val sparkSession = SparkSession.builder
       .master("local[*]")
       .appName("Task1")
@@ -14,7 +14,7 @@ class Task1Test extends FlatSpec {
 
     val tablePath = Paths.get(getClass.getResource("testShort.csv").toURI).toString
     val table = TableLoader.loadTestTable(sparkSession, tablePath)
-    val result = ReservationsTableTransformation.top3MostPopularHotelsBetweenCouples(table)
+    val result = ReservationsTableTransformation.mostPopularHotelsBetweenCouples(table)
     val expected = sparkSession.read.format("csv")
       .option("header", "true")
       .schema(StructType(Array(
